@@ -1,0 +1,40 @@
+name: cut tape
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cut-tape
+  cancel-in-progress: false
+
+jobs:
+  cut:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Three minutes of room time. Long enough for the shape of the room to
+      # show, short enough that the job finishes well inside the runner limit.
+      - name: Record the room
+        run: python tools/cut_tape.py --room lobby --minutes 3 --out data/tape.json
+
+      - name: Commit if the tape changed
+        run: |
+          git config user.name "cut-tape"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/tape.json
+          if git diff --cached --quiet; then
+            echo "no change"
+          else
+            git commit -m "cut tape $(date -u +%Y-%m-%dT%H:%MZ)"
+            git push
+          fi
