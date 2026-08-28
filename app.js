@@ -26,7 +26,7 @@ function start(t) {
 
   document.getElementById('cut').textContent =
     `/r/${t.room} · cut ${t.cut_at} · ${t.span_seconds}s of room time · ` +
-    `${fmt(t.skipped)} sequences skipped · seq ${fmt(t.first_seq)}–${fmt(t.last_seq)}`;
+    `${fmt(t.skipped)} sequences skipped · seq ${fmt(t.first_seq)}-${fmt(t.last_seq)}`;
   document.getElementById('t1').textContent = t.span_seconds + 's';
 
   document.getElementById('readout').innerHTML = [
