@@ -2,7 +2,10 @@ name: cut tape
 
 on:
   schedule:
-    - cron: "*/30 * * * *"
+    # Offset from the top of the hour on purpose: :00 and :30 are the busiest
+    # minutes on the shared scheduler and runs queued there get dropped rather
+    # than delayed. Odd minutes well away from the boundary actually fire.
+    - cron: "13,43 * * * *"
   workflow_dispatch:
 
 permissions:
